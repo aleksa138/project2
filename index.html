@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>ELJUR TS</title>
+
+<style>
+body {
+    background: linear-gradient(135deg, #0a0f1c, #0f172a);
+    color: white;
+    text-align: center;
+    font-family: Arial;
+}
+
+input {
+    padding: 12px;
+    margin: 5px;
+    border-radius: 10px;
+    border: none;
+}
+
+button {
+    padding: 12px 20px;
+    border-radius: 10px;
+    background: linear-gradient(90deg, #6a00ff, #00f7ff);
+    color: white;
+    border: none;
+}
+
+.card {
+    background: #11182b;
+    padding: 15px;
+    margin: 10px;
+    border-radius: 15px;
+}
+</style>
+</head>
+<body>
+
+<h1>⚡ ELJUR ANALYTICS (TS) ⚡</h1>
+
+<input id="url" placeholder="URL">
+
+<input id="login" placeholder="Login">
+
+<input id="password" type="password">
+
+<button onclick="load()">🚀 Запустить</button>
+
+<div id="result"></div>
+
+<script>
+async function load() {
+    const res = await fetch('/api/grades', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            url: url.value,
+            login: login.value,
+            password: password.value
+        })
+    });
+
+    const data = await res.json();
+
+    let html = "";
+
+    for (let s in data) {
+        html += `<div class="card">
+            <h3>${s}</h3>
+            <p>${data[s].grades}</p>
+            <p>Средний: ${data[s].avg}</p>
+        </div>`;
+    }
+
+    result.innerHTML = html;
+}
+</script>
+
+</body>
+</html>
