@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>ELJUR Analytics</title>
+
+<style>
+body {
+    background: linear-gradient(135deg, #0a0f1c, #0f172a);
+    color: white;
+    text-align: center;
+    font-family: Arial;
+}
+
+input {
+    padding: 12px;
+    margin: 6px;
+    border-radius: 10px;
+    border: none;
+    width: 250px;
+}
+
+button {
+    padding: 12px 20px;
+    border-radius: 10px;
+    background: linear-gradient(90deg, #6a00ff, #00f7ff);
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.card {
+    background: #11182b;
+    padding: 15px;
+    margin: 10px auto;
+    border-radius: 15px;
+    width: 300px;
+    box-shadow: 0 0 15px rgba(0,255,255,0.2);
+}
+</style>
+</head>
+<body>
+
+<h1>⚡ ELJUR ANALYTICS ⚡</h1>
+
+<input id="url" placeholder="URL">
+
+<input id="login" placeholder="Login">
+
+<input id="password" type="password" placeholder="Password">
+
+<button onclick="loadData()">🚀 Запустить</button>
+
+<div id="result"></div>
+
+<script>
+async function loadData() {
+    const urlInput = document.getElementById('url');
+    const loginInput = document.getElementById('login');
+    const passwordInput = document.getElementById('password');
+    const resultDiv = document.getElementById('result');
+
+    resultDiv.innerHTML = "⏳ Загрузка...";
+
+    try {
+        const res = await fetch('/api/grades', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                url: urlInput.value,
+                login: loginInput.value,
+                password: passwordInput.value
+            })
+        });
+
+        if (!res.ok) {
+            throw new Error("Ошибка сервера");
+        }
+
+        const data = await res.json();
+
+        let html = "";
+
+        for (let subject in data) {
+            html += `<div class="card">
+                <h3>${subject}</h3>
+                <p>Оценки: ${data[subject].grades}</p>
+                <p>Средний: ${data[subject].avg}</p>
+            </div>`;
+        }
+
+        resultDiv.innerHTML = html;
+
+    } catch (err) {
+        resultDiv.innerHTML = "❌ Ошибка: " + err.message;
+    }
+}
+</script>
+
+</body>
+</html>
